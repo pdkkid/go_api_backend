@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pdkkid/go_api_backend/cassandra"
+	"github.com/pdkkid/go_api_backend/product"
 )
 
 type heartbeatRes struct {
@@ -20,6 +21,7 @@ func main() {
 	defer CassandraSession.Close()
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", heartbeat)
+	router.HandleFunc("/product", product.Post)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
