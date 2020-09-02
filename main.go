@@ -11,6 +11,7 @@ import (
 	"github.com/pdkkid/go_api_backend/product"
 )
 
+//Basic Heartbeat struct
 type heartbeatRes struct {
 	Status string `json:"status"`
 	Code   int    `json:"code"`
@@ -19,9 +20,13 @@ type heartbeatRes struct {
 func main() {
 	CassandraSession := cassandra.Session
 	defer CassandraSession.Close()
+
+	//Traffic routing start
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", heartbeat)
-	router.HandleFunc("/product", product.Post)
+	router.HandleFunc("/", heartbeat).Methods("GET", "OPTIONS")
+	router.HandleFunc("/product/new", product.Post).Methods("POST", "OPTIONS")
+	router.HandleFunc("/product", product.Get).Methods("GET", "OPTIONS")
+	//Start server
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
